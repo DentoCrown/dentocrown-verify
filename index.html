@@ -520,6 +520,11 @@
             <span class="field-error" id="err-email">يرجى إدخال بريد إلكتروني صحيح</span>
           </div>
           <div class="field full">
+            <label for="phone">رقم الهاتف (مع رمز الدولة) <span class="req">*</span></label>
+            <input type="tel" id="phone" placeholder="+90555..." required style="direction:ltr;text-align:left;" />
+            <span class="field-error" id="err-phone">يرجى إدخال رقم هاتف صحيح</span>
+          </div>
+          <div class="field full">
             <label for="university">اسم الجامعة <span class="req">*</span></label>
             <input type="text" id="university" placeholder="الاسم الكامل للجامعة" required />
             <span class="field-error" id="err-university">يرجى إدخال اسم الجامعة</span>
@@ -695,6 +700,7 @@
     ok = validateField('firstName',  'err-firstName',  v => v.trim().length >= 2) && ok;
     ok = validateField('lastName',   'err-lastName',   v => v.trim().length >= 2) && ok;
     ok = validateField('email',      'err-email',      v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) && ok;
+    ok = validateField('phone',      'err-phone',      v => /^\+?[0-9\s\-\(\)]{8,}$/.test(v.trim())) && ok;
     ok = validateField('university', 'err-university', v => v.trim().length >= 3) && ok;
     ok = validateField('grade',      'err-grade',      v => v !== '') && ok;
     ok = validateField('country',    'err-country',    v => v.trim().length >= 2) && ok;
@@ -723,6 +729,7 @@
       firstName:  document.getElementById('firstName').value.trim(),
       lastName:   document.getElementById('lastName').value.trim(),
       email:      document.getElementById('email').value.trim(),
+      phone:      document.getElementById('phone').value.trim(),
       university: document.getElementById('university').value.trim(),
       grade:      document.getElementById('grade').value,
       country:    document.getElementById('country').value.trim(),
