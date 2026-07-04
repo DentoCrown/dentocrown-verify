@@ -552,14 +552,14 @@
 
         <!-- Upload -->
         <span class="upload-label">
-          وثيقة إثبات الطالب (بطاقة / شهادة قيد) <span style="color:var(--teal-light)">*</span>
+          وثيقة إثبات الطالب (شهادة قيد أو كشف درجات/Transkript) <span style="color:var(--teal-light)">*</span>
         </span>
         <div class="upload-area" id="uploadArea">
           <input type="file" id="docFile" accept="image/jpeg,image/png,image/jpg,application/pdf" required />
           <div class="upload-icon" id="uploadIcon">📄</div>
           <div class="upload-title" id="uploadTitle">اسحب المستند هنا أو انقر للرفع</div>
           <div class="upload-sub" id="uploadSub">
-            بطاقة الطالب، شهادة القيد، أو أي وثيقة رسمية من الجامعة<br/>
+            لا نقبل البطاقات الجامعية. يرجى رفع شهادة قيد أو كشف درجات (Transkript) حديث.<br/>
             PNG، JPG، PDF — الحجم الأقصى 10 ميغابايت
           </div>
           <div class="upload-preview" id="uploadPreview">
@@ -613,7 +613,7 @@
       <div class="result-title error">لم يتم التحقق</div>
       <div class="result-msg" id="rejectMsg">
         عذراً، لم نتمكن من التحقق من هويتك كطالب طب أسنان من خلال المستند المرفق.<br/><br/>
-        يرجى رفع بطاقة طالب صحيحة أو شهادة قيد رسمية والمحاولة مجدداً.
+        لا نقبل بطاقات الطلاب الجامعية (لعدم احتوائها على تاريخ). يرجى رفع <strong>شهادة قيد رسمية</strong> أو <strong>كشف درجات (Transkript) حديث</strong> والمحاولة مجدداً.
       </div>
       <button class="btn-again" onclick="resetForm()">حاول مجدداً</button>
     </div>
@@ -796,7 +796,7 @@
     document.getElementById('uploadIcon').style.display = 'block';
     document.getElementById('uploadTitle').textContent = 'اسحب المستند هنا أو انقر للرفع';
     document.getElementById('uploadSub').textContent =
-      'بطاقة الطالب، شهادة القيد، أو أي وثيقة رسمية\nPNG، JPG، PDF — الحجم الأقصى 10 ميغابايت';
+      'لا نقبل البطاقات الجامعية. يرجى رفع شهادة قيد أو Transkript\nPNG، JPG، PDF — الحجم الأقصى 10 ميغابايت';
     document.getElementById('uploadPreview').style.display = 'none';
     ['aiStep1','aiStep2','aiStep3'].forEach((id, i) =>
       document.getElementById(id).className = 'ai-step' + (i === 0 ? ' active' : ''));
