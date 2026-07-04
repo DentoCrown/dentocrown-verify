@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DentoCrown – التحقق من هوية الطالب</title>
+  <meta name="description" content="تحقق من هويتك كطالب طب أسنان للانضمام إلى تجمع DentoCrown." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --teal: #0fa39a;
+      --teal-light: #13c5ba;
+      --teal-dark: #0b8a82;
+      --navy: #2d3476;
+      --navy-light: #3d46a0;
+      --navy-dark: #1e2350;
+      --bg: #0d1117;
+      --bg2: #161b27;
+      --bg3: #1e2535;
+      --glass: rgba(255,255,255,0.04);
+      --border: rgba(255,255,255,0.08);
+      --text: #e8eaf0;
+      --text-sub: #8b92a9;
+      --success: #22c55e;
+      --error: #ef4444;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      direction: rtl;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 10%, rgba(15,163,154,0.15) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 80% 80%, rgba(45,52,118,0.25) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 60% 30%, rgba(15,163,154,0.07) 0%, transparent 50%);
+      animation: bgPulse 8s ease-in-out infinite alternate;
+    }
+    @keyframes bgPulse {
+      0%   { opacity: 1; }
+      100% { opacity: 0.7; }
+    }
+
+    .particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+    .particle {
+      position: absolute;
+      width: 3px; height: 3px;
+      background: var(--teal);
+      border-radius: 50%;
+      opacity: 0;
+      animation: float linear infinite;
+    }
+    @keyframes float {
+      0%   { transform: translateY(100vh) scale(0); opacity: 0; }
+      10%  { opacity: 0.6; }
+      90%  { opacity: 0.3; }
+      100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+    }
+
+    .page {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 40px 20px 60px;
+    }
+
+    /* ── Header ── */
+    .header {
+      display: flex; flex-direction: column; align-items: center; gap: 16px;
+      margin-bottom: 36px; text-align: center;
+      animation: fadeDown 0.8s ease both;
+    }
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo-wrap {
+      position: relative;
+      width: 90px; height: 90px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo-wrap::before {
+      content: '';
+      position: absolute; inset: -6px;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, var(--teal), var(--navy-light), var(--teal));
+      animation: spinBorder 4s linear infinite;
+      z-index: 0;
+    }
+    .logo-wrap::after {
+      content: '';
+      position: absolute; inset: -3px;
+      border-radius: 50%;
+      background: var(--bg);
+      z-index: 1;
+    }
+    @keyframes spinBorder { to { transform: rotate(360deg); } }
+    .logo-wrap img {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      object-fit: contain;
+      background: white;
+      padding: 8px;
+      position: relative; z-index: 2;
+    }
+
+    .brand-name {
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--teal-light) 0%, #fff 50%, var(--navy-light) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 0;
+    }
+    .brand-sub {
+      font-size: 1rem;
+      color: var(--text-sub);
+      font-weight: 400;
+    }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 16px;
+      background: rgba(15,163,154,0.1);
+      border: 1px solid rgba(15,163,154,0.3);
+      border-radius: 100px;
+      font-size: 0.82rem;
+      color: var(--teal-light);
+      font-weight: 600;
+      margin-top: -6px;
+      animation: pulseBadge 2s ease-in-out infinite;
+    }
+    @keyframes pulseBadge {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(15,163,154,0.4); }
+      50%       { box-shadow: 0 0 0 8px rgba(15,163,154,0); }
+    }
+    .badge-dot {
+      width: 7px; height: 7px;
+      background: var(--teal-light);
+      border-radius: 50%;
+      animation: blink 1.4s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.3; }
+    }
+
+    /* ── Card ── */
+    .card {
+      width: 100%; max-width: 620px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 40px 36px;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.03);
+      animation: fadeUp 0.9s ease both 0.15s;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-title {
+      font-size: 1.3rem; font-weight: 700;
+      margin-bottom: 6px; color: #fff;
+    }
+    .card-desc {
+      font-size: 0.9rem; color: var(--text-sub);
+      margin-bottom: 24px; line-height: 1.8;
+    }
+
+    /* ── Privacy banner ── */
+    .privacy-banner {
+      display: flex; align-items: flex-start; gap: 12px;
+      background: rgba(15,163,154,0.06);
+      border: 1px solid rgba(15,163,154,0.2);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 28px;
+      font-size: 0.83rem;
+      color: var(--text-sub);
+      line-height: 1.7;
+    }
+    .privacy-banner .icon { font-size: 1.2rem; margin-top: 2px; flex-shrink: 0; }
+    .privacy-banner strong { color: var(--teal-light); }
+
+    /* ── Steps ── */
+    .steps {
+      display: flex; gap: 8px; align-items: center;
+      margin-bottom: 32px;
+      direction: rtl;
+    }
+    .step {
+      flex: 1; text-align: center;
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+    }
+    .step-dot {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: var(--bg3);
+      border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 700;
+      color: var(--text-sub);
+      transition: all 0.3s ease;
+    }
+    .step.active .step-dot {
+      background: var(--teal); border-color: var(--teal); color: #fff;
+      box-shadow: 0 0 16px rgba(15,163,154,0.5);
+    }
+    .step.done .step-dot { background: var(--success); border-color: var(--success); color: #fff; }
+    .step-label { font-size: 0.72rem; color: var(--text-sub); font-weight: 600; }
+    .step.active .step-label { color: var(--teal-light); }
+    .step-line { flex: 1; height: 1px; background: var(--border); }
+
+    /* ── Form ── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 480px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .card { padding: 28px 18px; }
+    }
+
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field.full { grid-column: 1 / -1; }
+    .field label {
+      font-size: 0.83rem; font-weight: 700;
+      color: var(--text-sub);
+    }
+    .field label span.req { color: var(--teal-light); margin-right: 2px; }
+
+    .field input, .field select {
+      background: var(--bg3);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 0.9rem;
+      color: var(--text);
+      font-family: 'Cairo', sans-serif;
+      outline: none;
+      transition: border-color 0.25s, box-shadow 0.25s;
+      width: 100%;
+      direction: rtl;
+      text-align: right;
+    }
+    .field input:focus, .field select:focus {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(15,163,154,0.15);
+    }
+    .field input::placeholder { color: var(--text-sub); opacity: 0.5; }
+    .field select option { background: var(--bg2); color: var(--text); }
+
+    /* ── Upload area ── */
+    .upload-area {
+      border: 2px dashed var(--border);
+      border-radius: 14px;
+      padding: 28px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      margin-bottom: 24px;
+      background: var(--bg3);
+    }
+    .upload-area:hover, .upload-area.dragover {
+      border-color: var(--teal);
+      background: rgba(15,163,154,0.06);
+      box-shadow: 0 0 20px rgba(15,163,154,0.1);
+    }
+    .upload-area input[type="file"] {
+      position: absolute; inset: 0;
+      opacity: 0; cursor: pointer; width: 100%; height: 100%;
+    }
+    .upload-icon { font-size: 2.4rem; margin-bottom: 10px; }
+    .upload-title { font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .upload-sub { font-size: 0.78rem; color: var(--text-sub); line-height: 1.7; }
+    .upload-preview {
+      display: none;
+      margin-top: 14px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .upload-preview img { width: 100%; max-height: 200px; object-fit: contain; background: var(--bg); }
+    .upload-preview-name {
+      padding: 8px 12px;
+      font-size: 0.78rem;
+      color: var(--teal-light);
+      background: rgba(15,163,154,0.06);
+      display: flex; align-items: center; gap: 8px;
+      direction: ltr; text-align: left;
+    }
+
+    /* ── Submit ── */
+    .btn-submit {
+      width: 100%;
+      padding: 15px 24px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 100%);
+      color: #fff;
+      font-size: 1.05rem; font-weight: 800;
+      cursor: pointer;
+      font-family: 'Cairo', sans-serif;
+      transition: all 0.3s ease;
+      position: relative; overflow: hidden;
+    }
+    .btn-submit::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .btn-submit:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(15,163,154,0.35);
+    }
+    .btn-submit:hover:not(:disabled)::before { opacity: 1; }
+    .btn-submit:active:not(:disabled) { transform: translateY(0); }
+    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* ── Loading ── */
+    .loading-state {
+      display: none;
+      flex-direction: column; align-items: center; gap: 20px;
+      padding: 40px 0; text-align: center;
+    }
+    .spinner {
+      width: 56px; height: 56px;
+      border: 4px solid var(--border);
+      border-top-color: var(--teal);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-text { font-size: 1rem; font-weight: 700; color: var(--text); }
+    .loading-sub { font-size: 0.85rem; color: var(--text-sub); }
+
+    .ai-steps { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 340px; }
+    .ai-step {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px;
+      background: var(--bg3);
+      border-radius: 10px;
+      font-size: 0.85rem;
+      color: var(--text-sub);
+      border: 1px solid var(--border);
+      transition: all 0.4s ease;
+      direction: rtl;
+    }
+    .ai-step.active { color: var(--teal-light); border-color: rgba(15,163,154,0.3); background: rgba(15,163,154,0.06); }
+    .ai-step.done { color: var(--success); border-color: rgba(34,197,94,0.2); }
+    .ai-step-icon { font-size: 1rem; width: 22px; text-align: center; flex-shrink: 0; }
+
+    /* ── Result states ── */
+    .result-state {
+      display: none;
+      flex-direction: column; align-items: center; gap: 16px;
+      padding: 40px 20px; text-align: center;
+    }
+    .result-icon {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.5rem;
+    }
+    .result-icon.success {
+      background: rgba(34,197,94,0.1);
+      border: 2px solid rgba(34,197,94,0.3);
+      animation: successPop 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    .result-icon.error {
+      background: rgba(239,68,68,0.1);
+      border: 2px solid rgba(239,68,68,0.3);
+      animation: successPop 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    @keyframes successPop {
+      from { transform: scale(0.3); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+    .result-title { font-size: 1.4rem; font-weight: 800; }
+    .result-title.success { color: var(--success); }
+    .result-title.error { color: var(--error); }
+    .result-msg { font-size: 0.92rem; color: var(--text-sub); line-height: 1.8; max-width: 420px; }
+    .result-id {
+      font-size: 0.8rem;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 16px;
+      color: var(--teal-light);
+      font-family: monospace;
+      direction: ltr;
+    }
+
+    .btn-again {
+      padding: 10px 28px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      background: transparent;
+      color: var(--text-sub);
+      font-size: 0.9rem; font-weight: 600;
+      cursor: pointer;
+      font-family: 'Cairo', sans-serif;
+      transition: all 0.25s;
+    }
+    .btn-again:hover { border-color: var(--teal); color: var(--teal-light); }
+
+    /* ── Footer ── */
+    .footer {
+      margin-top: 36px; text-align: center;
+      font-size: 0.78rem; color: var(--text-sub);
+      opacity: 0.7;
+      animation: fadeUp 1s ease both 0.4s;
+    }
+
+    /* ── Field error ── */
+    .field-error { font-size: 0.76rem; color: var(--error); display: none; margin-top: 2px; }
+    .field input.invalid, .field select.invalid { border-color: var(--error); }
+
+    /* ── Upload label line ── */
+    .upload-label {
+      font-size: 0.83rem; font-weight: 700;
+      color: var(--text-sub); margin-bottom: 8px; display: block;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+
+<div class="particles" id="particles"></div>
+
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo-wrap">
+      <img src="LogoFinal-(1).png" alt="شعار DentoCrown" />
+    </div>
+    <div class="brand-name">DentoCrown</div>
+    <div class="brand-sub">نظام التحقق من هوية الطالب</div>
+    <div class="badge">
+      <span class="badge-dot"></span>
+      برنامج تطوعي — مجاني تماماً
+    </div>
+  </div>
+
+  <!-- Card -->
+  <div class="card">
+
+    <!-- Step indicator -->
+    <div class="steps" id="steps">
+      <div class="step active" id="step1">
+        <div class="step-dot">١</div>
+        <div class="step-label">البيانات</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step" id="step2">
+        <div class="step-dot">٢</div>
+        <div class="step-label">التحليل</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step" id="step3">
+        <div class="step-dot">٣</div>
+        <div class="step-label">النتيجة</div>
+      </div>
+    </div>
+
+    <!-- ─── FORM ─── -->
+    <div id="formSection">
+      <div class="card-title">تحقق من هويتك كطالب طب أسنان</div>
+      <div class="card-desc">
+        للانضمام إلى مجتمع DentoCrown، نحتاج إلى التحقق من أنك طالب في كلية طب الأسنان.
+        المستند الذي ترفعه يُحلَّل فورياً بواسطة الذكاء الاصطناعي
+        <strong style="color:var(--teal-light);">ولا يُحفظ في أي مكان.</strong>
+      </div>
+
+      <div class="privacy-banner">
+        <span class="icon">🔒</span>
+        <div>
+          <strong>ضمان الخصوصية:</strong> المستند الذي ترفعه لا يُخزَّن على خوادمنا إطلاقاً.
+          يُرسَل مباشرةً إلى الذكاء الاصطناعي للتحليل الآني ثم يُحذف. لا يُحفظ سوى اسمك ونتيجة التحقق.
+        </div>
+      </div>
+
+      <form id="verifyForm" novalidate>
+        <div class="form-grid">
+          <div class="field">
+            <label for="firstName">الاسم الأول <span class="req">*</span></label>
+            <input type="text" id="firstName" placeholder="مثال: محمد" required />
+            <span class="field-error" id="err-firstName">يرجى إدخال الاسم الأول</span>
+          </div>
+          <div class="field">
+            <label for="lastName">اسم العائلة <span class="req">*</span></label>
+            <input type="text" id="lastName" placeholder="مثال: الأحمد" required />
+            <span class="field-error" id="err-lastName">يرجى إدخال اسم العائلة</span>
+          </div>
+          <div class="field full">
+            <label for="email">البريد الإلكتروني <span class="req">*</span></label>
+            <input type="email" id="email" placeholder="example@university.edu" required style="direction:ltr;text-align:left;" />
+            <span class="field-error" id="err-email">يرجى إدخال بريد إلكتروني صحيح</span>
+          </div>
+          <div class="field full">
+            <label for="university">اسم الجامعة <span class="req">*</span></label>
+            <input type="text" id="university" placeholder="الاسم الكامل للجامعة" required />
+            <span class="field-error" id="err-university">يرجى إدخال اسم الجامعة</span>
+          </div>
+          <div class="field">
+            <label for="grade">السنة الدراسية <span class="req">*</span></label>
+            <select id="grade" required>
+              <option value="">اختر السنة</option>
+              <option value="1">السنة الأولى</option>
+              <option value="2">السنة الثانية</option>
+              <option value="3">السنة الثالثة</option>
+              <option value="4">السنة الرابعة</option>
+              <option value="5">السنة الخامسة</option>
+              <option value="6">السنة السادسة</option>
+              <option value="masters">الدراسات العليا / التخصص</option>
+            </select>
+            <span class="field-error" id="err-grade">يرجى اختيار السنة الدراسية</span>
+          </div>
+          <div class="field">
+            <label for="country">الدولة <span class="req">*</span></label>
+            <input type="text" id="country" placeholder="مثال: مصر" required />
+            <span class="field-error" id="err-country">يرجى إدخال الدولة</span>
+          </div>
+        </div>
+
+        <!-- Upload -->
+        <span class="upload-label">
+          وثيقة إثبات الطالب (بطاقة / شهادة قيد) <span style="color:var(--teal-light)">*</span>
+        </span>
+        <div class="upload-area" id="uploadArea">
+          <input type="file" id="docFile" accept="image/*,application/pdf" required />
+          <div class="upload-icon" id="uploadIcon">📄</div>
+          <div class="upload-title" id="uploadTitle">اسحب المستند هنا أو انقر للرفع</div>
+          <div class="upload-sub" id="uploadSub">
+            بطاقة الطالب، شهادة القيد، أو أي وثيقة رسمية من الجامعة<br/>
+            PNG، JPG، PDF — الحجم الأقصى 10 ميغابايت
+          </div>
+          <div class="upload-preview" id="uploadPreview">
+            <img id="previewImg" src="" alt="معاينة المستند" />
+            <div class="upload-preview-name" id="previewName"></div>
+          </div>
+        </div>
+        <span class="field-error" id="err-doc" style="margin-top:-16px;margin-bottom:16px;">يرجى رفع مستند إثبات الطالب</span>
+
+        <button type="submit" class="btn-submit" id="btnSubmit">
+          🔍 &nbsp; ابدأ التحقق الآن
+        </button>
+      </form>
+    </div>
+
+    <!-- ─── LOADING ─── -->
+    <div class="loading-state" id="loadingSection">
+      <div class="spinner"></div>
+      <div>
+        <div class="loading-text">الذكاء الاصطناعي يحلل المستند...</div>
+        <div class="loading-sub">قد تستغرق العملية من 10 إلى 20 ثانية</div>
+      </div>
+      <div class="ai-steps">
+        <div class="ai-step active" id="aiStep1">
+          <span class="ai-step-icon">📤</span> جاري رفع المستند
+        </div>
+        <div class="ai-step" id="aiStep2">
+          <span class="ai-step-icon">🤖</span> الذكاء الاصطناعي يحلل الوثيقة
+        </div>
+        <div class="ai-step" id="aiStep3">
+          <span class="ai-step-icon">✉️</span> جاري إرسال النتيجة
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SUCCESS ─── -->
+    <div class="result-state" id="successSection">
+      <div class="result-icon success">✅</div>
+      <div class="result-title success">تم التحقق بنجاح!</div>
+      <div class="result-msg">
+        مبروك! تم التأكد من أنك طالب طب أسنان.<br/>
+        سيتواصل معك فريق DentoCrown قريباً ويرسل لك رابط مجموعة واتساب على بريدك الإلكتروني.
+      </div>
+      <div class="result-id" id="verificationId">رقم التحقق: —</div>
+      <button class="btn-again" onclick="resetForm()">تقديم طلب جديد</button>
+    </div>
+
+    <!-- ─── REJECT ─── -->
+    <div class="result-state" id="rejectSection">
+      <div class="result-icon error">❌</div>
+      <div class="result-title error">لم يتم التحقق</div>
+      <div class="result-msg" id="rejectMsg">
+        عذراً، لم نتمكن من التحقق من هويتك كطالب طب أسنان من خلال المستند المرفق.<br/><br/>
+        يرجى رفع بطاقة طالب صحيحة أو شهادة قيد رسمية والمحاولة مجدداً.
+      </div>
+      <button class="btn-again" onclick="resetForm()">حاول مجدداً</button>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>© 2025 DentoCrown — البرنامج التطوعي</p>
+    <p style="margin-top:4px;">جميع المستندات تُستخدم للتحليل الفوري فقط ولا تُحفظ.</p>
+  </div>
+
+</div>
+
+<script>
+  // ─── Particles ───
+  (function() {
+    const container = document.getElementById('particles');
+    for (let i = 0; i < 25; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.width = p.style.height = (Math.random() * 3 + 1.5) + 'px';
+      const dur = (Math.random() * 12 + 8) + 's';
+      const delay = (Math.random() * 10) + 's';
+      p.style.animation = `float ${dur} ${delay} linear infinite`;
+      container.appendChild(p);
+    }
+  })();
+
+  // ─── File Upload ───
+  const uploadArea  = document.getElementById('uploadArea');
+  const docFile     = document.getElementById('docFile');
+  const preview     = document.getElementById('uploadPreview');
+  const previewImg  = document.getElementById('previewImg');
+  const previewName = document.getElementById('previewName');
+  let uploadedFileB64 = null;
+  let uploadedMime    = null;
+
+  uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.classList.add('dragover'); });
+  uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+  uploadArea.addEventListener('drop', e => {
+    e.preventDefault();
+    uploadArea.classList.remove('dragover');
+    if (e.dataTransfer.files[0]) processFile(e.dataTransfer.files[0]);
+  });
+  docFile.addEventListener('change', () => { if (docFile.files[0]) processFile(docFile.files[0]); });
+
+  function processFile(file) {
+    if (file.size > 10 * 1024 * 1024) { alert('حجم الملف يتجاوز 10 ميغابايت.'); return; }
+    const allowed = ['image/jpeg','image/jpg','image/png','image/webp','image/heic','application/pdf'];
+    if (!allowed.includes(file.type)) { alert('يرجى رفع ملف PNG أو JPG أو PDF فقط.'); return; }
+    uploadedMime = file.type;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const result = ev.target.result;
+      uploadedFileB64 = result.split(',')[1];
+      if (file.type.startsWith('image/')) {
+        previewImg.src = result;
+        previewImg.style.display = 'block';
+      } else {
+        previewImg.style.display = 'none';
+      }
+      previewName.innerHTML = '📎 ' + file.name;
+      preview.style.display = 'block';
+      document.getElementById('uploadIcon').style.display = 'none';
+      document.getElementById('uploadTitle').textContent = '✅ تم رفع المستند';
+      document.getElementById('uploadSub').textContent = 'انقر للتغيير';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // ─── Validation ───
+  function validateField(id, errId, check) {
+    const el = document.getElementById(id);
+    const er = document.getElementById(errId);
+    const ok = check(el.value);
+    el.classList.toggle('invalid', !ok);
+    er.style.display = ok ? 'none' : 'block';
+    return ok;
+  }
+  function validateAll() {
+    let ok = true;
+    ok = validateField('firstName',  'err-firstName',  v => v.trim().length >= 2) && ok;
+    ok = validateField('lastName',   'err-lastName',   v => v.trim().length >= 2) && ok;
+    ok = validateField('email',      'err-email',      v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) && ok;
+    ok = validateField('university', 'err-university', v => v.trim().length >= 3) && ok;
+    ok = validateField('grade',      'err-grade',      v => v !== '') && ok;
+    ok = validateField('country',    'err-country',    v => v.trim().length >= 2) && ok;
+    const errDoc = document.getElementById('err-doc');
+    if (!uploadedFileB64) { errDoc.style.display = 'block'; ok = false; }
+    else errDoc.style.display = 'none';
+    return ok;
+  }
+
+  // ─── Steps ───
+  function setStep(n) {
+    ['step1','step2','step3'].forEach((id, i) => {
+      document.getElementById(id).className =
+        'step' + (i + 1 === n ? ' active' : i + 1 < n ? ' done' : '');
+    });
+  }
+
+  // ─── Submit ───
+  const APPS_SCRIPT_URL = 'REPLACE_WITH_YOUR_APPS_SCRIPT_URL';
+
+  document.getElementById('verifyForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    if (!validateAll()) return;
+
+    const data = {
+      firstName:  document.getElementById('firstName').value.trim(),
+      lastName:   document.getElementById('lastName').value.trim(),
+      email:      document.getElementById('email').value.trim(),
+      university: document.getElementById('university').value.trim(),
+      grade:      document.getElementById('grade').value,
+      country:    document.getElementById('country').value.trim(),
+      fileBase64: uploadedFileB64,
+      mimeType:   uploadedMime
+    };
+
+    document.getElementById('formSection').style.display = 'none';
+    document.getElementById('loadingSection').style.display = 'flex';
+    setStep(2);
+
+    setTimeout(() => {
+      document.getElementById('aiStep1').className = 'ai-step done';
+      document.getElementById('aiStep2').className = 'ai-step active';
+    }, 2000);
+    setTimeout(() => {
+      document.getElementById('aiStep2').className = 'ai-step done';
+      document.getElementById('aiStep3').className = 'ai-step active';
+    }, 8000);
+
+    try {
+      const res  = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      const json = await res.json();
+
+      document.getElementById('aiStep3').className = 'ai-step done';
+      setTimeout(() => {
+        document.getElementById('loadingSection').style.display = 'none';
+        setStep(3);
+        if (json.approved) {
+          document.getElementById('verificationId').textContent =
+            'رقم التحقق: ' + (json.verificationId || '—');
+          document.getElementById('successSection').style.display = 'flex';
+        } else {
+          if (json.reason) {
+            document.getElementById('rejectMsg').innerHTML =
+              'عذراً، لم نتمكن من التحقق من هويتك.<br/><br/>' +
+              '<strong>السبب:</strong> ' + json.reason +
+              '<br/><br/>يرجى رفع مستند صحيح والمحاولة مجدداً.';
+          }
+          document.getElementById('rejectSection').style.display = 'flex';
+        }
+      }, 1200);
+
+    } catch (err) {
+      console.error(err);
+      document.getElementById('loadingSection').style.display = 'none';
+      document.getElementById('rejectMsg').innerHTML =
+        'حدث خطأ في الاتصال بالخادم. يرجى المحاولة مجدداً بعد دقائق.';
+      document.getElementById('rejectSection').style.display = 'flex';
+      setStep(3);
+    }
+  });
+
+  function resetForm() {
+    document.getElementById('verifyForm').reset();
+    ['successSection','rejectSection','loadingSection'].forEach(id =>
+      document.getElementById(id).style.display = 'none');
+    document.getElementById('formSection').style.display = 'block';
+    uploadedFileB64 = null; uploadedMime = null;
+    document.getElementById('uploadIcon').style.display = 'block';
+    document.getElementById('uploadTitle').textContent = 'اسحب المستند هنا أو انقر للرفع';
+    document.getElementById('uploadSub').textContent =
+      'بطاقة الطالب، شهادة القيد، أو أي وثيقة رسمية\nPNG، JPG، PDF — الحجم الأقصى 10 ميغابايت';
+    document.getElementById('uploadPreview').style.display = 'none';
+    ['aiStep1','aiStep2','aiStep3'].forEach((id, i) =>
+      document.getElementById(id).className = 'ai-step' + (i === 0 ? ' active' : ''));
+    setStep(1);
+  }
+</script>
+</body>
+</html>
