@@ -497,14 +497,30 @@
       <div class="privacy-banner">
         <span class="icon">🔒</span>
         <div>
-          <strong>ضمان الخصوصية:</strong> المستند الذي ترفعه لا يُخزَّن على خوادمنا إطلاقاً.
-          يُرسَل مباشرةً إلى الذكاء الاصطناعي للتحليل الآني ثم يُحذف. لا يُحفظ سوى اسمك ونتيجة التحقق.
+          <strong>ملاحظة الخصوصية:</strong> المستند الذي ترفعه يُحفظ بشكل آمن ومؤقت في خوادمنا لغرض التحقق من هويتك ومراجعة طلبك من قبل الفريق.
         </div>
       </div>
 
       <form id="verifyForm" novalidate>
         <div class="form-grid">
+          <div class="field full">
+            <label for="userType">صفة مقدم الطلب <span class="req">*</span></label>
+            <select id="userType" required onchange="toggleUserType()">
+              <option value="student" selected>طالب طب أسنان (Dental Student)</option>
+              <option value="dentist">طبيب أسنان متخرج (Graduated Dentist)</option>
+            </select>
+            <span class="field-error" id="err-userType">يرجى اختيار صفة مقدم الطلب</span>
+          </div>
           <div class="field">
+            <label for="firstNameAr">الاسم الأول (باللغة العربية) <span class="req">*</span></label>
+            <input type="text" id="firstNameAr" placeholder="مثال: محمد" required />
+            <span class="field-error" id="err-firstNameAr">يرجى إدخال الاسم الأول بالعربية</span>
+          </div>
+          <div class="field">
+            <label for="lastNameAr">اسم العائلة (باللغة العربية) <span class="req">*</span></label>
+            <input type="text" id="lastNameAr" placeholder="مثال: الأحمد" required />
+            <span class="field-error" id="err-lastNameAr">يرجى إدخال اسم العائلة بالعربية</span>
+          </div>
           <div class="field">
             <label for="firstName">الاسم الأول (بالأحرف اللاتينية كما في المستند) <span class="req">*</span></label>
             <input type="text" id="firstName" placeholder="e.g. Mohammed" required style="direction:ltr;text-align:left;" />
@@ -535,7 +551,7 @@
             <input type="text" id="university" placeholder="الاسم الكامل للجامعة" required />
             <span class="field-error" id="err-university">يرجى إدخال اسم الجامعة</span>
           </div>
-          <div class="field">
+          <div class="field" id="gradeFieldContainer">
             <label for="grade">السنة الدراسية <span class="req">*</span></label>
             <select id="grade" required>
               <option value="">اختر السنة</option>
@@ -723,13 +739,17 @@
   }
   function validateAll() {
     let ok = true;
+    ok = validateField('firstNameAr', 'err-firstNameAr', v => v.trim().length >= 2) && ok;
+    ok = validateField('lastNameAr',  'err-lastNameAr',  v => v.trim().length >= 2) && ok;
     ok = validateField('firstName',  'err-firstName',  v => v.trim().length >= 2) && ok;
     ok = validateField('lastName',   'err-lastName',   v => v.trim().length >= 2) && ok;
     ok = validateField('dob',        'err-dob',        v => v.trim().length > 0) && ok;
     ok = validateField('email',      'err-email',      v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) && ok;
     ok = validateField('phone',      'err-phone',      v => /^\+?[0-9\s\-\(\)]{8,}$/.test(v.trim())) && ok;
     ok = validateField('university', 'err-university', v => v.trim().length >= 3) && ok;
-    ok = validateField('grade',      'err-grade',      v => v !== '') && ok;
+    if (document.getElementById('userType').value === 'student') {
+      ok = validateField('grade',      'err-grade',      v => v !== '') && ok;
+    }
     ok = validateField('country',    'err-country',    v => v.trim().length >= 2) && ok;
     const errDoc = document.getElementById('err-doc');
     if (!uploadedFileB64) { errDoc.style.display = 'block'; ok = false; }
