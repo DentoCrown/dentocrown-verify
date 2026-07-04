@@ -9,7 +9,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.3/dist/heic2any.min.js"></script>
   <style>
     :root {
       --teal: #0fa39a;
@@ -556,7 +555,7 @@
           وثيقة إثبات الطالب (بطاقة / شهادة قيد) <span style="color:var(--teal-light)">*</span>
         </span>
         <div class="upload-area" id="uploadArea">
-          <input type="file" id="docFile" accept="image/*,application/pdf" required />
+          <input type="file" id="docFile" accept="image/jpeg,image/png,image/jpg,application/pdf" required />
           <div class="upload-icon" id="uploadIcon">📄</div>
           <div class="upload-title" id="uploadTitle">اسحب المستند هنا أو انقر للرفع</div>
           <div class="upload-sub" id="uploadSub">
@@ -663,38 +662,22 @@
   });
   docFile.addEventListener('change', () => { if (docFile.files[0]) processFile(docFile.files[0]); });
 
-  async function processFile(file) {
+  function processFile(file) {
     if (file.size > 10 * 1024 * 1024) { alert('حجم الملف يتجاوز 10 ميغابايت.'); return; }
-    
-    let processedFile = file;
-    if (file.type === "image/heic" || file.name.toLowerCase().endsWith(".heic")) {
-      try {
-        const convertedBlob = await heic2any({
-          blob: file,
-          toType: "image/jpeg",
-          quality: 0.8
-        });
-        processedFile = new File([convertedBlob], file.name.replace(/\.heic$/i, '.jpg'), { type: "image/jpeg" });
-      } catch (err) {
-        console.error("HEIC conversion failed:", err);
-        alert('فشل تحويل صيغة الصورة. يرجى استخدام JPG أو PNG.');
-        return;
-      }
-    }
-
+    const allowed = ['image/jpeg','image/jpg','image/png','image/webp','image/heic','application/pdf'];
+    if (!allowed.includes(file.type)) { alert('يرجى رفع ملف PNG أو JPG أو PDF فقط.'); return; }
+    uploadedMime = file.type;
     const reader = new FileReader();
     reader.onload = ev => {
       const result = ev.target.result;
       uploadedFileB64 = result.split(',')[1];
-      uploadedMime = processedFile.type;
-      
-      if (processedFile.type.startsWith('image/')) {
+      if (file.type.startsWith('image/')) {
         previewImg.src = result;
         previewImg.style.display = 'block';
       } else {
         previewImg.style.display = 'none';
       }
-      previewName.innerHTML = '📎 ' + processedFile.name;
+      previewName.innerHTML = '📎 ' + file.name;
       preview.style.display = 'block';
       document.getElementById('uploadIcon').style.display = 'none';
       document.getElementById('uploadTitle').textContent = '✅ تم رفع المستند';
