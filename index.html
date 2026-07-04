@@ -557,7 +557,7 @@
         </div>
 
         <!-- Upload -->
-        <span class="upload-label">
+        <span class="upload-label" id="uploadLabelText">
           وثيقة إثبات الطالب (شهادة قيد أو كشف درجات/Transkript) <span style="color:var(--teal-light)">*</span>
         </span>
         <div class="upload-area" id="uploadArea">
@@ -618,8 +618,8 @@
       <div class="result-icon error">❌</div>
       <div class="result-title error">لم يتم التحقق</div>
       <div class="result-msg" id="rejectMsg">
-        عذراً، لم نتمكن من التحقق من هويتك كطالب طب أسنان من خلال المستند المرفق.<br/><br/>
-        لا نقبل بطاقات الطلاب الجامعية (لعدم احتوائها على تاريخ). يرجى رفع <strong>شهادة قيد رسمية</strong> أو <strong>كشف درجات (Transkript) حديث</strong> والمحاولة مجدداً.
+        عذراً، لم نتمكن من التحقق من هويتك كطبيب/طالب طب أسنان من خلال المستند المرفق.<br/><br/>
+        لا نقبل بطاقات الطلاب الجامعية (لعدم احتوائها على تاريخ). يرجى رفع <strong>شهادة قيد رسمية / كشف درجات حديث</strong> أو <strong>شهادة التخرج (للأطباء)</strong> والمحاولة مجدداً.
       </div>
       <button class="btn-again" onclick="resetForm()">حاول مجدداً</button>
     </div>
@@ -635,6 +635,26 @@
 </div>
 
 <script>
+  // ─── User Type Toggle ───
+  function toggleUserType() {
+    const type = document.getElementById('userType').value;
+    const gradeContainer = document.getElementById('gradeFieldContainer');
+    const uploadLabel = document.getElementById('uploadLabelText');
+    const uploadSub = document.getElementById('uploadSub');
+
+    if (type === 'dentist') {
+      gradeContainer.style.display = 'none';
+      document.getElementById('grade').value = 'خريج'; // Default value for dentists
+      uploadLabel.innerHTML = 'وثيقة التخرج (Diploma / شهادة الجامعة) <span style="color:var(--teal-light)">*</span>';
+      uploadSub.innerHTML = 'يرجى رفع صورة واضحة لشهادة التخرج من كلية طب الأسنان.<br/>PNG، JPG، PDF — الحجم الأقصى 10 ميغابايت';
+    } else {
+      gradeContainer.style.display = 'block';
+      document.getElementById('grade').value = '';
+      uploadLabel.innerHTML = 'وثيقة إثبات الطالب (شهادة قيد أو كشف درجات/Transkript) <span style="color:var(--teal-light)">*</span>';
+      uploadSub.innerHTML = 'لا نقبل البطاقات الجامعية. يرجى رفع شهادة قيد أو كشف درجات حديث.<br/>PNG، JPG، PDF — الحجم الأقصى 10 ميغابايت';
+    }
+  }
+
   // ─── Particles ───
   (function() {
     const container = document.getElementById('particles');
@@ -733,6 +753,9 @@
     if (!validateAll()) return;
 
     const data = {
+      userType:   document.getElementById('userType').value,
+      firstNameAr: document.getElementById('firstNameAr').value.trim(),
+      lastNameAr: document.getElementById('lastNameAr').value.trim(),
       firstName:  document.getElementById('firstName').value.trim(),
       lastName:   document.getElementById('lastName').value.trim(),
       dob:        document.getElementById('dob').value.trim(),
@@ -804,7 +827,7 @@
     document.getElementById('uploadIcon').style.display = 'block';
     document.getElementById('uploadTitle').textContent = 'اسحب المستند هنا أو انقر للرفع';
     document.getElementById('uploadSub').textContent =
-      'لا نقبل البطاقات الجامعية. يرجى رفع شهادة قيد أو Transkript\nPNG، JPG، PDF — الحجم الأقصى 10 ميغابايت';
+      document.getElementById('userType').value === 'dentist' ? 'يرجى رفع صورة واضحة لشهادة التخرج\nPNG، JPG، PDF — الحجم الأقصى 10 ميغابايت' : 'لا نقبل البطاقات الجامعية. يرجى رفع شهادة قيد أو Transkript\nPNG، JPG، PDF — الحجم الأقصى 10 ميغابايت';
     document.getElementById('uploadPreview').style.display = 'none';
     ['aiStep1','aiStep2','aiStep3'].forEach((id, i) =>
       document.getElementById(id).className = 'ai-step' + (i === 0 ? ' active' : ''));
