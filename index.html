@@ -505,14 +505,20 @@
       <form id="verifyForm" novalidate>
         <div class="form-grid">
           <div class="field">
-            <label for="firstName">الاسم الأول <span class="req">*</span></label>
-            <input type="text" id="firstName" placeholder="مثال: محمد" required />
+          <div class="field">
+            <label for="firstName">الاسم الأول (بالأحرف اللاتينية كما في المستند) <span class="req">*</span></label>
+            <input type="text" id="firstName" placeholder="e.g. Mohammed" required style="direction:ltr;text-align:left;" />
             <span class="field-error" id="err-firstName">يرجى إدخال الاسم الأول</span>
           </div>
           <div class="field">
-            <label for="lastName">اسم العائلة <span class="req">*</span></label>
-            <input type="text" id="lastName" placeholder="مثال: الأحمد" required />
+            <label for="lastName">اسم العائلة (بالأحرف اللاتينية كما في المستند) <span class="req">*</span></label>
+            <input type="text" id="lastName" placeholder="e.g. Alahmad" required style="direction:ltr;text-align:left;" />
             <span class="field-error" id="err-lastName">يرجى إدخال اسم العائلة</span>
+          </div>
+          <div class="field full">
+            <label for="dob">تاريخ الميلاد <span class="req">*</span></label>
+            <input type="date" id="dob" required style="direction:ltr;text-align:left;" />
+            <span class="field-error" id="err-dob">يرجى إدخال تاريخ الميلاد</span>
           </div>
           <div class="field full">
             <label for="email">البريد الإلكتروني <span class="req">*</span></label>
@@ -699,6 +705,7 @@
     let ok = true;
     ok = validateField('firstName',  'err-firstName',  v => v.trim().length >= 2) && ok;
     ok = validateField('lastName',   'err-lastName',   v => v.trim().length >= 2) && ok;
+    ok = validateField('dob',        'err-dob',        v => v.trim().length > 0) && ok;
     ok = validateField('email',      'err-email',      v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) && ok;
     ok = validateField('phone',      'err-phone',      v => /^\+?[0-9\s\-\(\)]{8,}$/.test(v.trim())) && ok;
     ok = validateField('university', 'err-university', v => v.trim().length >= 3) && ok;
@@ -728,6 +735,7 @@
     const data = {
       firstName:  document.getElementById('firstName').value.trim(),
       lastName:   document.getElementById('lastName').value.trim(),
+      dob:        document.getElementById('dob').value.trim(),
       email:      document.getElementById('email').value.trim(),
       phone:      document.getElementById('phone').value.trim(),
       university: document.getElementById('university').value.trim(),
