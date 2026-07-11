@@ -523,6 +523,15 @@
             <span class="field-error" id="err-lastName">يرجى إدخال اسم العائلة</span>
           </div>
           <div class="field full">
+            <label for="gender">الجنس <span class="req">*</span></label>
+            <select id="gender" required>
+              <option value="">اختر الجنس</option>
+              <option value="male">ذكر (Erkek)</option>
+              <option value="female">أنثى (Kadın)</option>
+            </select>
+            <span class="field-error" id="err-gender">يرجى اختيار الجنس</span>
+          </div>
+          <div class="field full">
             <label for="dob">تاريخ الميلاد <span class="req">*</span></label>
             <input type="date" id="dob" required style="direction:ltr;text-align:left;" />
             <span class="field-error" id="err-dob">يرجى إدخال تاريخ الميلاد</span>
@@ -734,6 +743,7 @@
     ok = validateField('lastNameAr',  'err-lastNameAr',  v => v.trim().length >= 2) && ok;
     ok = validateField('firstName',  'err-firstName',  v => v.trim().length >= 2) && ok;
     ok = validateField('lastName',   'err-lastName',   v => v.trim().length >= 2) && ok;
+    ok = validateField('gender',     'err-gender',     v => v !== '') && ok;
     ok = validateField('dob',        'err-dob',        v => v.trim().length > 0) && ok;
     ok = validateField('email',      'err-email',      v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) && ok;
     ok = validateField('phone',      'err-phone',      v => /^\+?[0-9\s\-\(\)]{8,}$/.test(v.trim())) && ok;
@@ -769,6 +779,7 @@
       lastNameAr: document.getElementById('lastNameAr').value.trim(),
       firstName:  document.getElementById('firstName').value.trim(),
       lastName:   document.getElementById('lastName').value.trim(),
+      gender:     document.getElementById('gender').value,
       dob:        document.getElementById('dob').value.trim(),
       email:      document.getElementById('email').value.trim(),
       phone:      document.getElementById('phone').value.trim(),
