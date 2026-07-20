@@ -502,6 +502,21 @@
             </select>
             <span class="field-error" id="err-userType">يرجى اختيار صفة مقدم الطلب</span>
           </div>
+          <div class="field full" id="specialtyContainer" style="display: none;">
+            <label for="specialty">التخصص (Uzmanlık) <span class="req">*</span></label>
+            <select id="specialty" required>
+              <option value="">اختر التخصص</option>
+              <option value="General Dentist">طبيب أسنان عام (Genel Diş Hekimi)</option>
+              <option value="Endodontist">أخصائي علاج جذور (Endodontist)</option>
+              <option value="Orthodontist">أخصائي تقويم (Ortodontist)</option>
+              <option value="Periodontist">أخصائي أمراض لثة (Periodontoloji)</option>
+              <option value="Prosthodontist">أخصائي تركيبات (Protetik Diş Tedavisi)</option>
+              <option value="Oral Surgeon">أخصائي جراحة (Ağız Diş ve Çene Cerrahisi)</option>
+              <option value="Pediatric Dentist">أخصائي أسنان أطفال (Pedodonti)</option>
+              <option value="Restorative Dentist">أخصائي علاج تحفظي (Restoratif Diş Tedavisi)</option>
+            </select>
+            <span class="field-error" id="err-specialty">يرجى اختيار التخصص</span>
+          </div>
           <div class="field">
             <label for="firstNameAr">الاسم الأول (باللغة العربية) <span class="req">*</span></label>
             <input type="text" id="firstNameAr" placeholder="مثال: محمد" required />
@@ -655,16 +670,20 @@
   function toggleUserType() {
     const type = document.getElementById('userType').value;
     const gradeContainer = document.getElementById('gradeFieldContainer');
+    const specialtyContainer = document.getElementById('specialtyContainer');
     const uploadLabel = document.getElementById('uploadLabelText');
     const uploadSub = document.getElementById('uploadSub');
 
     if (type === 'dentist') {
       gradeContainer.style.display = 'none';
+      specialtyContainer.style.display = 'block';
       document.getElementById('grade').value = 'خريج'; // Default value for dentists
       uploadLabel.innerHTML = 'وثيقة التخرج (Diploma / شهادة الجامعة) <span style="color:var(--teal-light)">*</span>';
       uploadSub.innerHTML = 'يرجى رفع صورة واضحة لشهادة التخرج من كلية طب الأسنان.<br/>PNG، JPG، PDF — الحجم الأقصى 10 ميغابايت';
     } else {
       gradeContainer.style.display = 'block';
+      specialtyContainer.style.display = 'none';
+      document.getElementById('specialty').value = '';
       document.getElementById('grade').value = '';
       uploadLabel.innerHTML = 'وثيقة إثبات الطالب (شهادة قيد أو كشف درجات/Transkript) <span style="color:var(--teal-light)">*</span>';
       uploadSub.innerHTML = 'لا نقبل البطاقات الجامعية. يرجى رفع شهادة قيد أو كشف درجات حديث.<br/>PNG، JPG، PDF — الحجم الأقصى 10 ميغابايت';
@@ -750,6 +769,8 @@
     ok = validateField('university', 'err-university', v => v.trim().length >= 3) && ok;
     if (document.getElementById('userType').value === 'student') {
       ok = validateField('grade',      'err-grade',      v => v !== '') && ok;
+    } else {
+      ok = validateField('specialty',  'err-specialty',  v => v !== '') && ok;
     }
     ok = validateField('country',    'err-country',    v => v.trim().length >= 2) && ok;
     const errDoc = document.getElementById('err-doc');
@@ -785,6 +806,7 @@
       phone:      document.getElementById('phone').value.trim(),
       university: document.getElementById('university').value.trim(),
       grade:      document.getElementById('grade').value,
+      specialty:  document.getElementById('specialty').value,
       country:    document.getElementById('country').value.trim(),
       fileBase64: uploadedFileB64,
       mimeType:   uploadedMime
